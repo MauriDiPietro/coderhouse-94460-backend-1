@@ -12,12 +12,11 @@ divisionPromesa(1, 5)
   .catch((error) => {
     console.log(error);
   })
-  .finally(()=>{
-    console.log('Operacion finalizada');
-  })
+  .finally(() => {
+    console.log("Operacion finalizada");
+  });
 
-  
-fetch('https://jsonplaceholder.typicode.com/posts')
+fetch("https://jsonplaceholder.typicode.com/posts")
   .then((response) => response.json())
-  .then((data)=>console.log(data))
-  .catch((error)=>console.log(error));
+  .then((data) => console.log(data))
+  .catch((error) => console.log(error));
