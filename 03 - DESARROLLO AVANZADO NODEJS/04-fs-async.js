@@ -37,6 +37,18 @@ class UserManager {
         throw new Error(error);
     }
   };
+
+    login = async(email, password) => {
+      const users = await this.getUsers();
+      const user = users.find((u) => u.email === email);
+      if (!user) throw new Error("Invalid credentials");
+      const newCrypto = crypto
+        .createHmac("sha256", user.secret)  
+        .update(password)   
+        .digest("hex");
+      if (user.password !== newCrypto) throw new Error("Invalid credentials");
+      return "Login OK";
+    };
 }
 
 const userManager = new UserManager("./users.json");
