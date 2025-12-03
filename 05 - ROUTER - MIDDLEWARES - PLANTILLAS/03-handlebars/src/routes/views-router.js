@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { userManager } from "../managers/user-manager.js";
 
 const router = Router();
 
@@ -23,6 +24,20 @@ router.get("/vista2", (req, res) => {
 
 router.get("/vista3", (req, res) => {
   res.render("view3", { users });
+})
+
+router.get('/register', (req, res)=>{
+  res.render('form')
+})
+
+router.get('/home/:id', async(req, res)=>{
+  try {
+    const { id } = req.params;
+    const user = await userManager.getUserById(id);
+    res.render('dashboard', { user });
+  } catch (error) {
+    res.render('error', { error: error.message });
+  }
 })
 
 export default router;
