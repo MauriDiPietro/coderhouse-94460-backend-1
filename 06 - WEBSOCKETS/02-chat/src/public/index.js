@@ -35,3 +35,35 @@ socket.on("new-user", (username) => {
     onClick: function () {}, // Callback after click
   }).showToast();
 });
+
+const actions = document.getElementById("actions");
+const btn = document.getElementById("send");
+const output = document.getElementById("output");
+const message = document.getElementById("message");
+
+btn.addEventListener("click", () => {
+  socket.emit("chat:message", {
+    username,
+    message: message.value,
+  });
+  message.value = "";
+});
+
+socket.on("messages", (data) => {
+  actions.innerHTML = "";
+  const chat = data
+    .map((msg) => {
+      return `<p><strong>${msg.username}</strong>: ${msg.message}</p>`;
+    })
+    .join(" ");
+
+  output.innerHTML = chat;
+});
+
+message.addEventListener("keypress", () => {
+  socket.emit("chat:typing", username);
+});
+
+socket.on("chat:typing", (data) => {
+  actions.innerHTML = `<p><em>${data} está escribiendo un mensaje...</em></p>`;
+});

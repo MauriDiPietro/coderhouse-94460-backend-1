@@ -31,4 +31,13 @@ socketServer.on('connection', async(socket)=>{
     socket.on('new-user', (user)=>{
         socket.broadcast.emit('new-user', user) //se envia a todos los clientes menos al que lo emitio
     })
+
+    socket.on('chat:message', async(msg)=>{
+        await msgManager.create(msg);
+        socketServer.emit('messages', await msgManager.getAll())
+    })
+
+    socket.on('chat:typing', (data)=>{
+        socket.broadcast.emit('chat:typing', data)
+    })
 })
