@@ -8,10 +8,27 @@ class UserControllers {
 
   getAll = async (req, res) => {
     try {
-      const response = await this.manager.getAll();
-      res.json(response);
+      const { page, limit, last_name, sort } = req.query;
+      const response = await this.manager.getAll(page, limit, last_name, sort);
+      const nextPage = response.hasNextPage
+        ? `http://localhost:8080/users?page=${response.nextPage}`
+        : null;
+      const prevPage = response.hasPrevPage
+        ? `http://localhost:8080/users?page=${response.prevPage}`
+        : null;
+      res.json({
+        payload: response.docs,
+        info: {
+          count: response.totalDocs,
+          totalPages: response.totalPages,
+          nextLink: nextPage,
+          prevLink: prevPage,
+          hasPrevPage: response.hasPrevPage,
+          hasNextPage: response.hasNextPage,
+        },
+      });
     } catch (error) {
-      res.status(400).json(error);
+      res.status(400).json({ message: error.message });
     }
   };
 
@@ -22,8 +39,8 @@ class UserControllers {
       if (!response) throw new Error("Usuario no encontrado");
       return res.json(response);
     } catch (error) {
-      console.log(error)
-      res.status(400).json(error);
+      console.log(error);
+      res.status(400).json({ message: error.message });
     }
   };
 
@@ -34,7 +51,7 @@ class UserControllers {
       if (!response) throw new Error("Usuario no encontrado");
       return res.json(response);
     } catch (error) {
-      res.status(400).json(error);
+      res.status(400).json({ message: error.message });
     }
   };
 
@@ -43,7 +60,7 @@ class UserControllers {
       const response = await this.manager.create(req.body);
       res.json(response);
     } catch (error) {
-      res.status(400).json(error.message);
+      res.status(400).json({ message: error.message });
     }
   };
 
@@ -54,7 +71,7 @@ class UserControllers {
       if (!response) throw new Error("Usuario no encontrado");
       return res.json(response);
     } catch (error) {
-      res.status(400).json(error);
+      res.status(400).json({ message: error.message });
     }
   };
 
@@ -65,7 +82,7 @@ class UserControllers {
       if (!response) throw new Error("Usuario no encontrado");
       return res.json(response);
     } catch (error) {
-      res.status(400).json(error);
+      res.status(400).json({ message: error.message });
     }
   };
 
@@ -75,7 +92,7 @@ class UserControllers {
       const response = await this.manager.create(data);
       res.json({ message: `${response.length} usuarios creados` });
     } catch (error) {
-      res.status(400).json(error.message);
+      res.status(400).json({ message: error.message });
     }
   };
 
@@ -86,7 +103,7 @@ class UserControllers {
       if (!response) throw new Error("Usuario no encontrado");
       return res.json(response);
     } catch (error) {
-      res.status(400).json(error);
+      res.status(400).json({ message: error.message });
     }
   };
 
@@ -95,7 +112,7 @@ class UserControllers {
       const response = await this.manager.aggregation();
       res.json(response);
     } catch (error) {
-      res.status(400).json(error);
+      res.status(400).json({ message: error.message });
     }
   };
 }

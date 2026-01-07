@@ -1,13 +1,20 @@
 import { UserModel } from "../models/user-model.js";
+import { PetModel } from "../models/pet-model.js";
 
 class UserManager {
   constructor(model) {
     this.model = model;
   }
 
-  getAll = async () => {
+  getAll = async (page = 1, limit = 10, last_name, sort) => {
     try {
-      await this.model.find({});
+      const filter = last_name ? { last_name: last_name } : {};
+
+      let sortOrder = {};
+
+      if(sort) sortOrder.last_name = sort === 'asc' ? 1 : sort === 'desc' ? -1 : null
+
+      return await this.model.paginate(filter, { page, limit, sort: sortOrder });
     } catch (error) {
       throw new Error(error);
     }
