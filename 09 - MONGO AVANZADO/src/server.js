@@ -1,0 +1,22 @@
+import express from "express";
+import { initMongoDB } from "./config/connection.js";
+import productRouter from "./routes/product-router.js";
+import userRouter from "./routes/user-router.js";
+
+const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use("/products", productRouter);
+app.use("/users", userRouter);
+
+initMongoDB()
+  .then(() => console.log("Base de datos conectada"))
+  .catch((err) => console.log(err));
+
+const PORT = process.env.PORT || 8080;
+
+app.listen(PORT, () => {
+  console.log(`Server ok, puerto ${PORT}`);
+});
